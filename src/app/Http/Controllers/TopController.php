@@ -13,4 +13,10 @@ class TopController extends Controller
     {
         return view('top.index');
     }
+
+    public function runteq()
+    {
+        $robot = (['name' => 'ロボらんてくん']);
+        return view('top.runteq', compact('robot'));
+    }
 }
