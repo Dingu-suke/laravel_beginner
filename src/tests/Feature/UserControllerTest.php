@@ -123,7 +123,7 @@ class UserControllerTest extends TestCase
         while($count < $num) {
             $user = new User();
             $user->name = "らんてくん{$num}";
-            $user->age = $num;
+            $user->age = $num + 20;
             $user->save();
 
             $count += 1;

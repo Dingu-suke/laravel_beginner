@@ -30,11 +30,11 @@
                             @csrf
                             <div class="form-group">
                                 <label for="user">ユーザー名</label>
-                                <input type="text" name="name" class="form-control" value="{{old('name')}}" placeholder="らんてくん">
+                                <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" placeholder="らんてくん">
                             </div>
                             <div class="form-group">
                                 <label for="body">年齢</label>
-                                <input type="number" name="age" class="form-control" value="{{old('age')}}" placeholder="25">
+                                <input type="number" name="age" class="form-control" value="{{ old('age', $user->age) }}" placeholder="25">
                             </div>
                             <input type="submit" value="登録" class="btn btn-primary">
                         </form>
