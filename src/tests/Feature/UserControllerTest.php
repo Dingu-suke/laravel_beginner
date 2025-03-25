@@ -63,6 +63,19 @@ class UserControllerTest extends TestCase
         $this->assertSame($user->address, $attributes['address']);
     }
 
+    public function test_storeFail()
+    {
+        $attributes = [
+            'name' => '',
+            'age' => 'Thirty',
+        ];
+
+        $this->get("/users/create");
+        $this->post("/users", $attributes)
+             ->assertStatus(302)
+             ->assertRedirect(route("users.create"));
+    }
+
     public function test_edit()
     {
         $this->createUser();
@@ -81,7 +94,8 @@ class UserControllerTest extends TestCase
             'tel' => '08000123456',
             'address' => '東京都港区芝公園４−２−８',
         ];
-        $response = $this->patch(route("users.show", $user), $attributes);
+        $this->get(route("users.edit", $user));
+        $response = $this->patch(route("users.update", $user), $attributes);
 
         $response->assertStatus(302);
         $response->assertRedirect(route("users.show", $user));
@@ -91,6 +105,23 @@ class UserControllerTest extends TestCase
         $this->assertSame($user->age, $attributes['age']);
         $this->assertSame($user->tel, $attributes['tel']);
         $this->assertSame($user->address, $attributes['address']);
+    }
+
+    public function test_updateFail()
+    {
+        $this->createUser();
+        $user = $this->firstUser();
+        $attributes = [
+            'name' => '',
+            'age' => 'Thirty',
+            'tel' => '08000123456',
+            'address' => '東京都港区芝公園４−２−８',
+        ];
+        $this->get(route("users.edit", $user));
+        $response = $this->patch(route("users.update", $user), $attributes);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route("users.edit", $user));
     }
 
     private function createUser(int $num = 1)
