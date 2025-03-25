@@ -9,7 +9,7 @@ class User extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'age',];
+    protected $fillable = ['name', 'age', 'tel',];
 
     public static function helloWorld()
     {
