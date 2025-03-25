@@ -21,4 +21,5 @@ Route::get('/', function () {
 });
 
 Route::get('/top', [TopController::class, 'index'])->name('top.index');
+Route::get('/runteq', [TopController::class, 'runteq'])->name('top.runteq');
 Route::resource('users', UserController::class);
