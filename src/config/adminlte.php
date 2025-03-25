@@ -292,14 +292,19 @@ return [
     'menu' => [
         [
             'text'  => 'トップ',
-            'route' => 'top.index',   // urlからrouteに変更になっているので注意
+            'route' => 'top.index',
             'icon'  => 'fas fa-fw fa-user',
         ],
         [
             'text'  => 'ユーザー',
-            'route' => 'users.index',   // urlからrouteに変更になっているので注意
+            'route' => 'users.index',
             'icon'  => 'fas fa-fw fa-user',
         ],
+        [
+            'text'  => 'タスク',
+            'route' => 'tasks.index',
+            'icon'  => 'fas fa-fw fa-tasks',
+        ]
     ],
 
     /*
