@@ -10,4 +10,14 @@ class User extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'age',];
+
+    public static function helloWorld()
+    {
+        return 'Hello, World!!';
+    }
+
+    public function sayHello()
+    {
+        return 'Hello!!';
+    }
 }
