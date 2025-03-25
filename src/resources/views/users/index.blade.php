@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content_header')
-    <h1>ユーザー一覧</h1>
+    <h1>{{ $index_title }}</h1>
 @stop
 
 @section('content_body')

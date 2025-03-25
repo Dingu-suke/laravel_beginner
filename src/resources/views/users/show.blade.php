@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content_header')
-    <h1>ユーザー詳細</h1>
+    <h1>{{ $show_title }}</h1>
 @stop
 
 @section('content_body')
