@@ -45,6 +45,10 @@
                                 <label for="body">電話番号</label>
                                 <input type="text" name="tel" class="form-control" value="{{old('tel', $user->tel)}}" placeholder="09009876543">
                             </div>
+                            <div class="form-group">
+                                <label for="body">住所</label>
+                                <input type="text" name="address" class="form-control" value="{{old('address', $user->address)}}" placeholder="東京都渋谷区宇田川町36-6 ワールド宇田川ビル 5階 B室">
+                            </div>
                             <input type="submit" value="更新" class="btn btn-primary">
                         </form>
                     </div>

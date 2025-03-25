@@ -36,7 +36,9 @@ class UserController extends Controller
     {
         $user = new User();
         $user->name = 'らんてくん';
-        $user->age = 20;
+        $user->age  = 20;
+        $user->tel  = '09008976543';
+        $user->address  = '東京都渋谷区宇田川町36-6 ワールド宇田川ビル 5階 B室';
         
         return view('users.create', compact('user'));
     }
