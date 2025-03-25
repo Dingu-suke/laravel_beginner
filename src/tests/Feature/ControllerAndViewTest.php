@@ -34,6 +34,8 @@ class ControllerAndViewTest extends TestCase
             $user = new User();
             $user->name = "らんてくん{$num}";
             $user->age = $num;
+            $user->address = "東京都{$num}区{$num}丁目{$num}番{$num}号";
+            $user->tel = "090-1234-{$num}";
             $user->save();
 
             $count += 1;

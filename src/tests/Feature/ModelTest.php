@@ -26,7 +26,10 @@ class ModelTest extends TestCase
         foreach ($this->ages as $age) {
             User::factory()->create([
                 'name' => "ユーザー{$age}",
-                'age' => $age]);
+                'age' => $age,
+                'tel' => '08000123456',
+                'address' => '東京都港区芝公園４−２−８'
+            ]);
         }
     }
 
@@ -76,6 +79,8 @@ class ModelTest extends TestCase
             $user = new User();
             $user->name = "らんてくん{$num}";
             $user->age = ($num + 1) * 10;
+            $user->address = "東京都{$num}区{$num}丁目{$num}番{$num}号";
+            $user->tel = "090-1234-{$num}";
             $user->save();
 
             $count += 1;

@@ -23,6 +23,9 @@
                             @if ($errors->has('age'))
                                 <p>{{ $errors->first('age') }}</p>
                             @endif
+                            @if ($errors->has('tel'))
+                                <p>{{ $errors->first('tel') }}</p>
+                            @endif
                         </div>
                         @endif
 
@@ -35,6 +38,14 @@
                             <div class="form-group">
                                 <label for="body">年齢</label>
                                 <input type="number" name="age" class="form-control" value="{{ old('age', $user->age) }}" placeholder="25">
+                            </div>
+                            <div class="form-group">
+                                <label for="body">電話番号</label>
+                                <input type="text" name="tel" class="form-control" value="{{ old('tel', $user->tel)}}" placeholder="09009876543">
+                            </div>
+                            <div class="form-group">
+                                <label for="body">住所</label>
+                                <input type="text" name="address" class="form-control" value="{{old('address', $user->address)}}" placeholder="東京都渋谷区宇田川町36-6 ワールド宇田川ビル 5階 B室">
                             </div>
                             <input type="submit" value="登録" class="btn btn-primary">
                         </form>
