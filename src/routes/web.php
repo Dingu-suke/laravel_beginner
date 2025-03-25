@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TopController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/top', [TopController::class, 'index'])->name('top.index');
-Route::get('/runteq', [TopController::class, 'runteq'])->name('top.runteq');
-Route::resource('users', UserController::class);
+Route::get       ('/top', [TopController::class, 'index'])->name('top.index');
+Route::resource  ('users', UserController::class);
+Route::controller(LoginController::class)->group(function() {
+    Route::get ('login', 'create')->name('login.create');
+    Route::post('login', 'store' )->name('login.store' );
+    Route::delete('logout', 'destroy')->name('login.destroy');
+});
+Route::get('/runteq', [TopController::class, 'runteq'])->name('top.runteq');https://maps.gstatic.com/tactile/pane/arrow_left_1x.png

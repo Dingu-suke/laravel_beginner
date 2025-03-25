@@ -47,6 +47,14 @@
                                 <label for="body">住所</label>
                                 <input type="text" name="address" class="form-control" value="{{old('address', $user->address)}}" placeholder="東京都渋谷区宇田川町36-6 ワールド宇田川ビル 5階 B室">
                             </div>
+                            <div class="form-group">
+                                <label for="body">メールアドレス</label>
+                                <input type="text" name="email" class="form-control" value="{{old('email', $user->email)}}" placeholder="example@gmai.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="body">パスワード</label>
+                                <input type="text" name="password" class="form-control" value="{{old('password', $user->password)}}" placeholder="パスワード">
+                            </div>
                             <input type="submit" value="登録" class="btn btn-primary">
                         </form>
                     </div>
