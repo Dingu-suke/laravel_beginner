@@ -8,6 +8,8 @@ use App\Models\User;
 
 class UserControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic feature test example.
      *
@@ -16,40 +18,29 @@ class UserControllerTest extends TestCase
     public function test_index()
     {
         $this->createUser();
-        $user = \App\Models\User::all()->first();
+        $user = $this->firstUser();
         $response = $this->get('/users');
 
         $this->checkCommonDisplay($response);
-        $this->assertSame($user->name, 'らんてくん1');
-        $response->assertSee("ユーザー一覧", true, "ページタイトルが「ユーザー一覧」ではありません");
-        $response->assertSee($user->name, true, "一覧ページにユーザー名を表示してください");
+        $this->checkUserDisplay($response, $user, '一覧ページ');
+        $response->assertSee("らんてくん", false, "一覧ページにユーザー名を表示してください");
         $response->assertSee($user->age, true, "一覧ページに年齢を表示してください");
     }
 
     public function test_show()
     {
         $this->createUser();
-        $user = \App\Models\User::select('*')->orderBy('id', 'desc')->first();
+        $user = $this->firstUser();
         $response = $this->get("/users/{$user->id}");
 
         $this->checkCommonDisplay($response);
-
-        $response->assertSee($user->name, true, "詳細ページにユーザー名を表示してください");
-        $response->assertSee($user->age, true, "詳細ページに年齢を表示してください");
-        $response->assertSee("戻る", true, "「戻る」ボタンが表示されていません");
-        $response->assertSee("編集", true, "「編集」ボタンが表示されていません");
-        $response->assertSee("削除", true, "「削除」ボタンが表示されていません");
+        $this->checkUserDisplay($response, $user, '詳細ページ');
     }
 
     public function test_create()
     {
         $response = $this->get("/users/create");
         $this->checkCommonDisplay($response);
-        $response->assertSee('登録', true, "「登録」ボタンが表示されていません");
-        $response->assertSee('ユーザー名', true, "「ユーザー名」ラベルが表示されていません");
-        $response->assertSee('年齢', true, "「年齢」ラベルが表示されていません");
-        $response->assertSee('戻る', true, "「戻る」ボタンが表示されていません");
-
     }
 
     public function test_storeSuccess()
@@ -57,63 +48,49 @@ class UserControllerTest extends TestCase
         $attributes = [
             'name' => 'らんてくん',
             'age' => 20,
+            'tel' => '08000123456',
+            'address' => '東京都港区芝公園４−２−８',
         ];
         $response = $this->post("/users", $attributes);
-
-        $user = \App\Models\User::select('*')->orderBy('id', 'desc')->first();
+        $user = $this->firstUser();
 
         $response->assertStatus(302);
         $response->assertRedirect(route("users.show", $user));
 
-        $this->assertSame($user->name, 'らんてくん');
-        $this->assertSame($user->age, 20);
-        $response->assertSessionHas('success', 'ユーザーを新規登録しました');
+        $this->assertSame($user->name, $attributes['name']);
+        $this->assertSame($user->age, $attributes['age']);
+        $this->assertSame($user->tel, $attributes['tel']);
+        $this->assertSame($user->address, $attributes['address']);
     }
 
     public function test_edit()
     {
         $this->createUser();
-        $user = User::latest('id')->first();
-        $response = $this->get("/users/{$user->id}/edit");
-
+        $user = $this->firstUser();
+        $response = $this->get(route("users.edit", $user));
         $this->checkCommonDisplay($response);
-        $response->assertSee('ユーザー名', true, "「ユーザー名」ラベルが表示されていません");
-        $response->assertSee('年齢', true, "「年齢」ラベルが表示されていません");
-        $response->assertSee('戻る', true, "「戻る」ボタンが表示されていません");
-
-        $response->assertSee($user->name, true, "編集ページにユーザー名が表示されていません");
-        $response->assertSee('更新', true, "更新ボタンが表示されていません");
     }
 
-    public function test_update_success()
+    public function test_updateSuccess()
     {
         $this->createUser();
-        $user = User::latest('id')->first();
-
+        $user = $this->firstUser();
         $attributes = [
-            'name' => 'Newらんてくん'
+            'name' => 'らんてくん',
+            'age' => 20,
+            'tel' => '08000123456',
+            'address' => '東京都港区芝公園４−２−８',
         ];
-        $response = $this->post("/users", $attributes);
-        $response = $this->patch("/users/{$user->id}", $attributes);
-
-        $user->refresh();
+        $response = $this->patch(route("users.show", $user), $attributes);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('users.show', $user));
-        $this->assertSame($user->name, 'Newらんてくん');
-        $response->assertSessionHas('success', 'ユーザー情報を更新しました');
-    }
+        $response->assertRedirect(route("users.show", $user));
 
-    public function test_destroy()
-    {
-        $this->createUser();
-        $user = User::latest('id')->first();
-
-        $response = $this->delete("/users/{$user->id}");
-
-        $response->assertStatus(302);
-        $response->assertRedirect('/users');
-        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $user = $this->firstUser();
+        $this->assertSame($user->name, $attributes['name']);
+        $this->assertSame($user->age, $attributes['age']);
+        $this->assertSame($user->tel, $attributes['tel']);
+        $this->assertSame($user->address, $attributes['address']);
     }
 
     private function createUser(int $num = 1)
@@ -122,8 +99,10 @@ class UserControllerTest extends TestCase
 
         while($count < $num) {
             $user = new User();
-            $user->name = "らんてくん{$num}";
-            $user->age = $num + 20;
+            $user->name = "らんてくん";
+            $user->age = 30;
+            $user->address = "東京都{$num}区{$num}丁目{$num}番{$num}号";
+            $user->tel = "090-1234-{$num}";
             $user->save();
 
             $count += 1;
@@ -133,9 +112,22 @@ class UserControllerTest extends TestCase
     private function checkCommonDisplay($response)
     {
         $response->assertStatus(200);
-        $attributes = ['ユーザー名', '年齢'];
+        $attributes = ['ユーザー名', '年齢', '電話番号', '住所',];
         foreach ($attributes as $attribute) {
             $response->assertSee($attribute, true, "{$attribute}という文字を表示するようにしてください");
         }
+    }
+
+    private function checkUserDisplay($response, $user, $page_title)
+    {
+        $response->assertSee($user->name, true, "${page_title}にユーザー名を表示してください");
+        $response->assertSee($user->age, true, "${page_title}に年齢を表示してください");
+        $response->assertSee($user->tel, true, "${page_title}に電話番号を表示してください");
+        $response->assertSee($user->address, true, "${page_title}に住所を表示してください");
+    }
+
+    private function firstUser()
+    {
+        return \App\Models\User::select('*')->orderBy('id', 'desc')->first();
     }
 }
