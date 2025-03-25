@@ -14,7 +14,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('age', '>=', 20)
+                    ->where('age', '<=', 50)
+                    ->orderBy('age', 'desc')
+                    ->get();
+
+        // $users = User::all();
         $index_title = 'ユーザー一覧';
         return view(
             'users.index',
@@ -29,7 +34,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $user = new User();
+        $user->name = 'らんてくん';
+        $user->age = 20;
+        
+        return view('users.create', compact('user'));
     }
 
     /**
