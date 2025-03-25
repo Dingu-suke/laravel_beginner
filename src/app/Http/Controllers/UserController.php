@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -35,10 +36,12 @@ class UserController extends Controller
     public function create()
     {
         $user = new User();
-        $user->name = 'らんてくん';
-        $user->age  = 20;
-        $user->tel  = '09008976543';
+        $user->name     = 'らんてくん';
+        $user->age      = 20;
+        $user->tel      = '09008976543';
         $user->address  = '東京都渋谷区宇田川町36-6 ワールド宇田川ビル 5階 B室';
+        $user->email    = 'example@gmail.com';
+        $user->password = 'password';
         
         return view('users.create', compact('user'));
     }
@@ -57,6 +60,9 @@ class UserController extends Controller
         ]);
         
         $data = $request->all();
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
         $user = new User();
         $user->fill($data)->save();
 
@@ -102,8 +108,13 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'age'  => 'required|integer'
         ]);
-
         $data = $request->all();
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            // パスワードフィールドが空の場合、更新対象から外す
+            unset($data['password']);
+        }
         $user = User::find($id);
         $user->fill($data)->save();
 
